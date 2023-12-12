@@ -32,7 +32,7 @@ namespace WebAppAPI.Controllers
         [HttpPost]
         public IActionResult CreateShirts([FromBody] Shirt shirt)
         {
-            return Ok("Creating a shirt" + $" price : {shirt.Price}");
+            return Ok("Creating shirt" + $" price : {shirt.Price}");
         }
         [HttpPut("{id}")]
         public IActionResult UpdateShirts(int id)
