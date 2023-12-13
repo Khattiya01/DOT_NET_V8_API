@@ -18,17 +18,18 @@ namespace WebAppAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllEmployee()
+        public async Task<ActionResult<List<Employee>>> GetAllEmployee()
         {
-            var datas = await _context.Shirt.ToListAsync();
-            return Ok(datas);
-            /* return Ok(new { data = ShirtRepository.GetShirts(),
-             meta = "meta"
-             });*/
+            var datas = await _context.Employees.ToListAsync();
+            return Ok( new
+            {
+                data = datas,
+                meta = "meta"
+            });
         }
 
         [HttpGet("id")]
-        public async Task<ActionResult> GetEmployeeById(int id)
+        public async Task<ActionResult<List<Employee>>> GetEmployeeById(int id)
         {
 
             var employee = await _context.Employees.FindAsync(id);
@@ -40,10 +41,21 @@ namespace WebAppAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEmployee([FromBody] Employee employee)
+        public async Task<ActionResult<List<Employee>>> CreateEmployee([FromBody] Employee employee)
         {
-            _context.Employees.Add(employee);
-            return Ok();
+            try
+            {
+                _context.Employees.Add(employee);
+                _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            return Ok(await _context.Employees.ToListAsync());
+
         }
+
     }
 }
