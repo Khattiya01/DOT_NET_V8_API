@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAppAPI.Data;
 using WebAppAPI.Filters.ActionFilters;
 using WebAppAPI.Filters.ExceptionFilters;
 using WebAppAPI.Models;
@@ -10,12 +12,21 @@ namespace WebAppAPI.Controllers
     [Route("api/[controller]")]
     public class ShirtsController: ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAllShirts()
+        private readonly DataContext _context;
+
+        public ShirtsController(DataContext context)
         {
-            return Ok(new { data = ShirtRepository.GetShirts(),
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllShirts()
+        {
+            var datas = await _context.Shirt.ToListAsync();
+            return Ok(datas);
+           /* return Ok(new { data = ShirtRepository.GetShirts(),
             meta = "meta"
-            });
+            });*/
         }
         [HttpGet("{id}")]
         [Shirt_ValidateShirtIdFilter]
