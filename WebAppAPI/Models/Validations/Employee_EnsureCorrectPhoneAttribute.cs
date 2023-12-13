@@ -8,7 +8,7 @@ namespace WebAppAPI.Models.Validations
         {
             var employee = validationContext.ObjectInstance as Employee;
             if(employee != null) {
-                int digitNumber = employee.Phone.ToString().Length;
+                int digitNumber = employee.Phone.Length;
                 if (digitNumber <= 0) {
                     return new ValidationResult("phone number is required.");
                 } else if (digitNumber < 10 || digitNumber > 10)

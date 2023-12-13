@@ -14,6 +14,6 @@ namespace WebAppAPI.Models
         public string? Country { get; set; }
         [Required]
         [Employee_EnsureCorrectPhone]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
     }
 }

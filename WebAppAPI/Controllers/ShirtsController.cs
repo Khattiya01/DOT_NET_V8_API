@@ -22,7 +22,7 @@ namespace WebAppAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllShirts()
         {
-            var datas = await _context.Shirt.ToListAsync();
+            var datas = await _context.Shirts.ToListAsync();
             return Ok(datas);
            /* return Ok(new { data = ShirtRepository.GetShirts(),
             meta = "meta"
