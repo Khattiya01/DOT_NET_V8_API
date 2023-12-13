@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebAppAPI.Filters.ActionFilters;
+using WebAppAPI.Filters.ExceptionFilters;
 using WebAppAPI.Models;
 using WebAppAPI.Models.Repositorys;
 
@@ -9,40 +10,42 @@ namespace WebAppAPI.Controllers
     [Route("api/[controller]")]
     public class ShirtsController: ControllerBase
     {
-
         [HttpGet]
         public IActionResult GetAllShirts()
         {
-            return Ok("Reading all the shirts");
+            return Ok(new { data = ShirtRepository.GetShirts(),
+            meta = "meta"
+            });
         }
         [HttpGet("{id}")]
+        [Shirt_ValidateShirtIdFilter]
         public IActionResult GetShirts(int id)
         {
-            if(id <= 0)
-            {
-                return BadRequest();
-            }
-            var shirt = ShirtRepository.GetShirtsById(id);
-            if(shirt == null)
-            {
-                return NotFound(); // 404
-            }
-            return Ok(shirt); //200
+            return Ok(ShirtRepository.GetShirtsById(id)); //200
         }
         [HttpPost]
+        [Shirt_ValidateCreateShirtFilter]
         public IActionResult CreateShirts([FromBody] Shirt shirt)
         {
-            return Ok("Creating shirt" + $" price : {shirt.Price}");
+            ShirtRepository.AddShirt(shirt);
+            return CreatedAtAction(nameof(GetShirts), new { id = shirt.ShirtID }, shirt);
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateShirts(int id)
+        [Shirt_ValidateShirtIdFilter]
+        [Shirt_ValidateUpdateShirtFilter]
+        [Shirt_HandleUpdateExceptionFilter]
+        public IActionResult UpdateShirts(int id, Shirt shirt)
         {
-            return Ok($"Updating shirt with id: {id}");
+            ShirtRepository.UpdateShirt(shirt);
+            return NoContent();
         }
         [HttpDelete("{id}")]
+        [Shirt_ValidateShirtIdFilter]
         public IActionResult DeleteShirts(int id)
         {
-            return Ok($"Deleting shirt with id: {id}");
+            var shirt = ShirtRepository.GetShirtsById(id);
+            ShirtRepository.DeleteShirt(id);
+            return Ok(shirt);
         }
     }
 }
