@@ -1,13 +1,26 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿
 using Microsoft.EntityFrameworkCore;
+using WebAppAPI.Models;
 
 namespace WebAppAPI.Data
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { 
+        protected readonly IConfiguration Configuration;
 
+        public DataContext(IConfiguration configuration)
+        {
+            Configuration = configuration;
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
+        }
+
+        public DbSet<Employee> employee { get; set; }
 
     }
 }
