@@ -61,7 +61,7 @@ namespace WebAppAPI.Migrations
                     Lastname = table.Column<string>(type: "text", nullable: false),
                     Age = table.Column<int>(type: "integer", nullable: true),
                     Country = table.Column<string>(type: "text", nullable: true),
-                    Phone = table.Column<int>(type: "integer", nullable: false)
+                    Phone = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

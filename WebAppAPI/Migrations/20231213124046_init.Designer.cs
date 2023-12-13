@@ -12,7 +12,7 @@ using WebAppAPI.Data;
 namespace WebAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231213101350_init")]
+    [Migration("20231213124046_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -243,8 +243,9 @@ namespace WebAppAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("integer");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

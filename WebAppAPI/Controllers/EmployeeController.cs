@@ -47,13 +47,13 @@ namespace WebAppAPI.Controllers
             {
                 _context.Employees.Add(employee);
                 _context.SaveChangesAsync();
+                return Ok(new { employee });
             }
             catch
             {
                 return BadRequest();
             }
 
-            return  Ok(new { employee });
 
         }
 
