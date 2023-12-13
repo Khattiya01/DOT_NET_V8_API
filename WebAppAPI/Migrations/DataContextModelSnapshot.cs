@@ -239,6 +239,40 @@ namespace WebAppAPI.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("WebAppAPI.Models.Shirt", b =>
+                {
+                    b.Property<int>("ShirtID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ShirtID"));
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MyProperty")
+                        .HasColumnType("text");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<int?>("Size")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ShirtID");
+
+                    b.ToTable("Shirt");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
