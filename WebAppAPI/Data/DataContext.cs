@@ -10,6 +10,6 @@ namespace WebAppAPI.Data
 
         }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Shirt> Shirt { get; set; }
+        public DbSet<Shirt> Shirts { get; set; }
     }
 }

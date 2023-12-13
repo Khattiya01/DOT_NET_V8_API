@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 //detabase
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 builder.Services.AddAuthorization();
