@@ -57,8 +57,11 @@ namespace WebAppAPI.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false)
+                    Firstname = table.Column<string>(type: "text", nullable: false),
+                    Lastname = table.Column<string>(type: "text", nullable: false),
+                    Age = table.Column<int>(type: "integer", nullable: true),
+                    Country = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,7 +12,7 @@ using WebAppAPI.Data;
 namespace WebAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231213082919_init")]
+    [Migration("20231213095857_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -229,13 +229,22 @@ namespace WebAppAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<int?>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Phone")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

@@ -53,8 +53,49 @@ namespace WebAppAPI.Controllers
                 return BadRequest();
             }
 
-            return Ok(await _context.Employees.ToListAsync());
+            return  Ok(new { employee });
 
+        }
+
+        [HttpPut("id")]
+        public async Task<ActionResult<List<Employee>>> UpdateEmployee([FromBody] Employee employee)
+        {
+            try
+            {
+                var dbEmployee = _context.Employees.First(x => x.Id == employee.Id);
+                if(dbEmployee is null) return NotFound("Employee not found.");
+
+                dbEmployee.Firstname = employee.Firstname;
+                dbEmployee.Lastname = employee.Lastname;
+                dbEmployee.Phone = employee.Phone;
+                dbEmployee.Country = employee.Country;
+                dbEmployee.Age = employee.Age;
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            return Ok(new { employee });
+
+        }
+
+        [HttpDelete("id")]
+        public async Task<ActionResult<List<Employee>>> DeleteEmployee(int id)
+        {
+            try
+            {
+                var dbEmployee = _context.Employees.First(x => x.Id == id);
+                if (dbEmployee is null) return NotFound("Employee not found.");
+
+                _context.Employees.Remove(dbEmployee);
+                _context.SaveChangesAsync();
+
+                return Ok();
+            } 
+            catch { return BadRequest(); }
         }
 
     }
