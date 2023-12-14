@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using WebAppAPI.Data;
 using WebAppAPI.Models.Repositorys;
 
 namespace WebAppAPI.Filters.ActionFilters

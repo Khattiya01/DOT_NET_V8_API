@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAppAPI.Data;
 using WebAppAPI.Models.Repositorys;
 using WebAppAPI.Models;
+using WebAppAPI.Filters.ActionFilters;
 
 namespace WebAppAPI.Controllers
 {
@@ -41,18 +42,41 @@ namespace WebAppAPI.Controllers
         }
 
         [HttpPost]
+        [Employee_ValidateCreateEmployeeFilter]
         public async Task<ActionResult<List<Employee>>> CreateEmployee([FromBody] Employee employee)
         {
-            try
-            {
-                _context.Employees.Add(employee);
-                _context.SaveChangesAsync();
-                return Ok(new { employee });
-            }
-            catch
-            {
-                return BadRequest();
-            }
+                var existingEmployee = _context.Employees.FirstOrDefault(x =>
+                    !string.IsNullOrWhiteSpace(employee.Firstname) &&
+                    !string.IsNullOrWhiteSpace(x.Firstname) &&
+                    x.Firstname.ToLower() == employee.Firstname.ToLower() &&
+                    !string.IsNullOrWhiteSpace(employee.Lastname) &&
+                    !string.IsNullOrWhiteSpace(x.Lastname) &&
+                    x.Lastname.ToLower() == employee.Lastname.ToLower() &&
+                    !string.IsNullOrWhiteSpace(employee.Phone) &&
+                    !string.IsNullOrWhiteSpace(x.Phone) &&
+                    x.Phone.ToLower() == employee.Phone.ToLower() &&
+                    employee.Age.HasValue &&
+                    x.Age.HasValue &&
+                    employee.Age.Value == x.Age.Value);
+
+                if (existingEmployee != null)
+                {
+                    return BadRequest("Employee already exists...");
+                } else
+                {
+                    try
+                    {
+                        _context.Employees.Add(employee);
+                        _context.SaveChangesAsync();
+                        return Ok(new { employee });
+                    }
+                    catch
+                    {
+                        return BadRequest("error");
+                    }
+
+                }
+           
 
 
         }
