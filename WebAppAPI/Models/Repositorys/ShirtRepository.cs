@@ -1,9 +1,11 @@
 ﻿using System.Reflection;
+using WebAppAPI.Data;
 
 namespace WebAppAPI.Models.Repositorys
 {
     public static class ShirtRepository
     {
+
         private static List<Shirt> shirtList = new List<Shirt>()
         {
             new Shirt { ShirtID = 1, Brand = "myBrand", Color = "red", Gender = "men", Price = 100, Size = 10},

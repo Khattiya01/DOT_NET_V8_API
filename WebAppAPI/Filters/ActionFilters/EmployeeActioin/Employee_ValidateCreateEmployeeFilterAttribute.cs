@@ -10,6 +10,13 @@ namespace WebAppAPI.Filters.ActionFilters
 {
     public class Employee_ValidateCreateEmployeeFilterAttribute : ActionFilterAttribute
     {
+        private readonly DataContext _context;
+
+        public Employee_ValidateCreateEmployeeFilterAttribute(DataContext context)
+        {
+            _context = context;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
@@ -25,7 +32,21 @@ namespace WebAppAPI.Filters.ActionFilters
                 };
                 context.Result = new BadRequestObjectResult(problemDetails);
             }
-           
+            else
+            {
+                var existingEmployee = _context.Employees.FirstOrDefault(x => x.Phone == employee.Phone);
+
+                if (existingEmployee != null)
+                {
+                    context.ModelState.AddModelError("Employee", "Employee already exists...");
+                    var problemDetails = new ValidationProblemDetails(context.ModelState)
+                    {
+                        Status = StatusCodes.Status400BadRequest
+                    };
+                    context.Result = new BadRequestObjectResult(problemDetails);
+                }
+            }
+
         }
     }
 }
