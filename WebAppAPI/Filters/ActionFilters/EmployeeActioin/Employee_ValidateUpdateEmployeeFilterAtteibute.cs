@@ -15,11 +15,12 @@ namespace WebAppAPI.Filters.ActionFilters
             if (id.HasValue && employee != null && id != employee.Id)
             {
                 context.ModelState.AddModelError("Employee", "Employee is not same as id");
-                var ploblemDetail = new ValidationProblemDetails()
+                var ploblemDetails = new ValidationProblemDetails(context.ModelState)
                 {
-                    Status = StatusCodes.Status400BadRequest
+                    Status = StatusCodes.Status400BadRequest,
+                    Detail = "detail"
                 };
-                context.Result = new BadRequestObjectResult(ploblemDetail);
+                context.Result = new BadRequestObjectResult(ploblemDetails);
             }
         }
     }

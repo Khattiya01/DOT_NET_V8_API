@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAppAPI.Data;
 using WebAppAPI.Models;
 using WebAppAPI.Filters.ActionFilters;
+using WebAppAPI.Filters.ExceptionFilters;
 
 namespace WebAppAPI.Controllers
 {
@@ -60,7 +61,8 @@ namespace WebAppAPI.Controllers
         [HttpPut("id")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
         [Employee_ValidateUpdateEmployeeFilterAtteibute]
-        public async Task<ActionResult<List<Employee>>> UpdateEmployee([FromBody] Employee employee)
+        [Employee_HandleUpdateExceptionFilter]
+        public async Task<ActionResult<List<Employee>>> UpdateEmployee(int id, [FromBody] Employee employee)
         {
             try
             {
