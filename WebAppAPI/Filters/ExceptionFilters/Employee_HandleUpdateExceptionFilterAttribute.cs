@@ -9,16 +9,13 @@ namespace WebAppAPI.Filters.ExceptionFilters
         {
             base.OnException(context);
 
-            var strEmployeeId = context.RouteData.Values["id"] as string;
-            if ((int.TryParse(strEmployeeId, out int employeeId)))
-            {
+            var strEmployeeId = context.RouteData.Values["id"] as int?;
                 context.ModelState.AddModelError("Employee", "Employee doesn't exist anymore.");
                 var problemDetails = new ValidationProblemDetails(context.ModelState)
                 {
                     Status = StatusCodes.Status404NotFound
                 };
                 context.Result = new NotFoundObjectResult(problemDetails);
-            }
         }
     }
 }

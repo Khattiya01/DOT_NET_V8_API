@@ -18,6 +18,14 @@ namespace WebAppAPI.Controllers
             _context = context;
         }
 
+        private readonly ILogger<EmployeeController> _logger;
+
+        public EmployeeController(ILogger<EmployeeController> logger)
+        {
+            _logger = logger;
+        }
+
+
         [HttpGet]
         public async Task<ActionResult<List<Employee>>> GetAllEmployee()
         {
