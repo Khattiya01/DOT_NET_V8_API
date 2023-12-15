@@ -15,5 +15,9 @@ namespace WebAppAPI.Models
         [Required]
         [Employee_EnsureCorrectPhone]
         public string Phone { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string password { get; set; }
     }
 }

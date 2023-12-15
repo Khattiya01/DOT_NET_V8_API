@@ -12,6 +12,7 @@ namespace WebAppAPI.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly DataContext _context;
+        private static Employee _employee = new Employee();
 
         public EmployeeController(DataContext context)
         {
@@ -56,9 +57,13 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                _context.Employees.Add(employee);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(employee.password);
+
+                _employee = employee;
+                _employee.password = passwordHash;
+                _context.Employees.Add(_employee);
                 _context.SaveChangesAsync();
-                return Ok(new { employee });
+                return Ok(new { _employee });
             }
             catch
             {

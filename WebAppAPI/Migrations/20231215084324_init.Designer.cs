@@ -12,8 +12,8 @@ using WebAppAPI.Data;
 namespace WebAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231214190237_initail")]
-    partial class initail
+    [Migration("20231215084324_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,6 +235,10 @@ namespace WebAppAPI.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");
@@ -244,6 +248,10 @@ namespace WebAppAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("text");
 
