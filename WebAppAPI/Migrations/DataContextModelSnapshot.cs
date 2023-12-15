@@ -244,11 +244,11 @@ namespace WebAppAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Phone")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("password")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 

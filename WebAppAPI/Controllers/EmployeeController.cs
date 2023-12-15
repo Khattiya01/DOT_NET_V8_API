@@ -14,18 +14,13 @@ namespace WebAppAPI.Controllers
         private readonly DataContext _context;
         private static Employee _employee = new Employee();
 
-        public EmployeeController(DataContext context)
-        {
-            _context = context;
-        }
-
         private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(ILogger<EmployeeController> logger)
+        public EmployeeController(ILogger<EmployeeController> logger, DataContext context)
         {
             _logger = logger;
+            _context = context;
         }
-
 
         [HttpGet]
         public async Task<ActionResult<List<Employee>>> GetAllEmployee()
@@ -57,10 +52,10 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(employee.password);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(employee.Password);
 
                 _employee = employee;
-                _employee.password = passwordHash;
+                _employee.Password = passwordHash;
                 _context.Employees.Add(_employee);
                 _context.SaveChangesAsync();
                 return Ok(new { _employee });

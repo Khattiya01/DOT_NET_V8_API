@@ -18,6 +18,6 @@ namespace WebAppAPI.Models
         [Required]
         public string Email { get; set; }
         [Required]
-        public string password { get; set; }
+        public string Password { get; set; }
     }
 }
