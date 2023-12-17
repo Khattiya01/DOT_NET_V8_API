@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using WebAppAPI.Models.Validations;
 
 namespace WebAppAPI.Models
@@ -7,7 +8,8 @@ namespace WebAppAPI.Models
     {
         public int Id { get; set; }
         public Guid UserId { get; set; } = Guid.NewGuid();
-        public DateTime CreateAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         [Required]
         public string Firstname { get; set; }
         [Required]
@@ -23,5 +25,9 @@ namespace WebAppAPI.Models
         public string Password { get; set; }
 
         public List<string> Role { get; set; }
+
+        public Company? company { get; set; }
+
+        public List<Weapon>? weapons { get; set; }
     }
 }

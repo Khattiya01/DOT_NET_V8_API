@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebAppAPI.Data;
@@ -12,9 +13,11 @@ using WebAppAPI.Data;
 namespace WebAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231217193907_UpdateDatabase1")]
+    partial class UpdateDatabase1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,8 +243,7 @@ namespace WebAppAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Companys");
                 });
@@ -408,8 +410,8 @@ namespace WebAppAPI.Migrations
             modelBuilder.Entity("WebAppAPI.Models.Company", b =>
                 {
                     b.HasOne("WebAppAPI.Models.Employee", "Employee")
-                        .WithOne("company")
-                        .HasForeignKey("WebAppAPI.Models.Company", "EmployeeId");
+                        .WithMany()
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Employee");
                 });
@@ -417,17 +419,10 @@ namespace WebAppAPI.Migrations
             modelBuilder.Entity("WebAppAPI.Models.Weapon", b =>
                 {
                     b.HasOne("WebAppAPI.Models.Employee", "Employee")
-                        .WithMany("weapons")
+                        .WithMany()
                         .HasForeignKey("EmployeeId");
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("WebAppAPI.Models.Employee", b =>
-                {
-                    b.Navigation("company");
-
-                    b.Navigation("weapons");
                 });
 #pragma warning restore 612, 618
         }

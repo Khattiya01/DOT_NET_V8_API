@@ -29,7 +29,7 @@ namespace WebAppAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Employee>>> GetAllEmployee()
         {
-            var datas = await _context.Employees.ToListAsync();
+            var datas = await _context.Employees.Include(e=> e.company).Include(e=> e.weapons).ToListAsync();
 
             return Ok( new
             {
@@ -38,13 +38,13 @@ namespace WebAppAPI.Controllers
             });
         }
 
-        [Authorize(Policy = "UserPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet("{id:guid}")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
-        public async Task<ActionResult<List<Employee>>> GetEmployeeById(Guid id)
+        public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)
         {
 
-            var employee = await _context.Employees.FirstAsync(x => x.UserId == id);
+            var employee = await _context.Employees.Include(e => e.company).Include(e => e.weapons).FirstOrDefaultAsync(x => x.UserId == id);
             if (employee is null)
             {
                 return NotFound();
@@ -62,14 +62,17 @@ namespace WebAppAPI.Controllers
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(employee.Password);
 
                 _employee = employee;
+                _employee.UserId = Guid.NewGuid();
+                _employee.CreatedAt = DateTime.UtcNow;
+                _employee.UpdatedAt = DateTime.UtcNow;
                 _employee.Password = passwordHash;
                 _context.Employees.Add(_employee);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return Ok(new { _employee });
             }
             catch
             {
-                return BadRequest("error");
+                return BadRequest("error create employee failed");
             }
         }
 
@@ -78,13 +81,14 @@ namespace WebAppAPI.Controllers
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
         [Employee_ValidateUpdateEmployeeFilterAtteibute]
         [Employee_HandleUpdateExceptionFilter]
-        public async Task<ActionResult<List<Employee>>> UpdateEmployee(int id, [FromBody] Employee employee)
+        public async Task<ActionResult<List<Employee>>> UpdateEmployee(Guid id, [FromBody] Employee employee)
         {
             try
             {
                 var dbEmployee = _context.Employees.First(x => x.UserId == employee.UserId);
                 if(dbEmployee is null) return NotFound("Employee not found.");
 
+                dbEmployee.Email = employee.Email;
                 dbEmployee.Firstname = employee.Firstname;
                 dbEmployee.Lastname = employee.Lastname;
                 dbEmployee.Phone = employee.Phone;

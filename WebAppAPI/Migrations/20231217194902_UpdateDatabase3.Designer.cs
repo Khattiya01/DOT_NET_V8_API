@@ -13,8 +13,8 @@ using WebAppAPI.Data;
 namespace WebAppAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231217115756_init")]
-    partial class init
+    [Migration("20231217194902_UpdateDatabase3")]
+    partial class UpdateDatabase3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,6 +222,33 @@ namespace WebAppAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WebAppAPI.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CompanyLocalName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("Companys");
+                });
+
             modelBuilder.Entity("WebAppAPI.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -236,7 +263,7 @@ namespace WebAppAPI.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreateAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
@@ -262,6 +289,9 @@ namespace WebAppAPI.Migrations
                     b.Property<List<string>>("Role")
                         .IsRequired()
                         .HasColumnType("text[]");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -303,6 +333,28 @@ namespace WebAppAPI.Migrations
                     b.HasKey("ShirtID");
 
                     b.ToTable("Shirts");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Weapon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("WeaponName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Weapons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -354,6 +406,31 @@ namespace WebAppAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Company", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.Employee", "Employee")
+                        .WithOne("company")
+                        .HasForeignKey("WebAppAPI.Models.Company", "EmployeeId");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Weapon", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.Employee", "Employee")
+                        .WithMany("weapons")
+                        .HasForeignKey("EmployeeId");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Employee", b =>
+                {
+                    b.Navigation("company");
+
+                    b.Navigation("weapons");
                 });
 #pragma warning restore 612, 618
         }

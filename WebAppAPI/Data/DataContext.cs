@@ -6,10 +6,10 @@ namespace WebAppAPI.Data
 {
     public class DataContext : IdentityDbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { 
-
-        }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Shirt> Shirts { get; set; }
+        public DbSet<Company> Companys { get; set; }
+        public DbSet<Weapon> Weapons { get; set; }
     }
 }
