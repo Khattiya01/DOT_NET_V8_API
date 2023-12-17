@@ -9,7 +9,7 @@ namespace WebAppAPI.Filters.ExceptionFilters
         {
             base.OnException(context);
 
-            var strEmployeeId = context.RouteData.Values["id"] as int?;
+            var strEmployeeId = context.RouteData.Values["id"] as Guid?;
                 context.ModelState.AddModelError("Employee", "Employee doesn't exist anymore.");
                 var problemDetails = new ValidationProblemDetails(context.ModelState)
                 {

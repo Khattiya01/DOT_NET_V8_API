@@ -6,6 +6,8 @@ namespace WebAppAPI.Models
     public class Employee
     {
         public int Id { get; set; }
+        public Guid UserId { get; set; } = Guid.NewGuid();
+        public DateTime CreateAt { get; set; } = DateTime.Now;
         [Required]
         public string Firstname { get; set; }
         [Required]
@@ -19,5 +21,7 @@ namespace WebAppAPI.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+
+        public List<string> Role { get; set; }
     }
 }

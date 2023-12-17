@@ -10,9 +10,9 @@ namespace WebAppAPI.Filters.ActionFilters
         {
             base.OnActionExecuting(context);
 
-            var id = context.ActionArguments["id"] as int?;
+            var id = context.ActionArguments["id"] as Guid?;
             var employee = context.ActionArguments["employee"] as Employee;
-            if (id.HasValue && employee != null && id != employee.Id)
+            if (id.HasValue && employee != null && id != employee.UserId)
             {
                 context.ModelState.AddModelError("Employee", "Employee is not same as id");
                 var ploblemDetails = new ValidationProblemDetails(context.ModelState)

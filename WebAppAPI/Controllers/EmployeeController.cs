@@ -4,6 +4,10 @@ using WebAppAPI.Data;
 using WebAppAPI.Models;
 using WebAppAPI.Filters.ActionFilters;
 using WebAppAPI.Filters.ExceptionFilters;
+using Microsoft.AspNetCore.Authorization;
+using WebAppAPI.Identity;
+using System.Security.Claims;
+using System.Data;
 
 namespace WebAppAPI.Controllers
 {
@@ -26,6 +30,7 @@ namespace WebAppAPI.Controllers
         public async Task<ActionResult<List<Employee>>> GetAllEmployee()
         {
             var datas = await _context.Employees.ToListAsync();
+
             return Ok( new
             {
                 data = datas,
@@ -33,18 +38,20 @@ namespace WebAppAPI.Controllers
             });
         }
 
-        [HttpGet("id")]
+        [Authorize(Policy = "UserPolicy")]
+        [HttpGet("{id:guid}")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
-        public async Task<ActionResult<List<Employee>>> GetEmployeeById(int id)
+        public async Task<ActionResult<List<Employee>>> GetEmployeeById(Guid id)
         {
 
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees.FirstAsync(x => x.UserId == id);
             if (employee is null)
             {
                 return NotFound();
             }
             return Ok(employee);
         }
+
 
         [HttpPost]
         [ServiceFilter(typeof(Employee_ValidateCreateEmployeeFilterAttribute))]
@@ -66,7 +73,8 @@ namespace WebAppAPI.Controllers
             }
         }
 
-        [HttpPut("id")]
+        [Authorize(Policy = "AdminPolicy")]
+        [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
         [Employee_ValidateUpdateEmployeeFilterAtteibute]
         [Employee_HandleUpdateExceptionFilter]
@@ -74,7 +82,7 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                var dbEmployee = _context.Employees.First(x => x.Id == employee.Id);
+                var dbEmployee = _context.Employees.First(x => x.UserId == employee.UserId);
                 if(dbEmployee is null) return NotFound("Employee not found.");
 
                 dbEmployee.Firstname = employee.Firstname;
@@ -94,13 +102,15 @@ namespace WebAppAPI.Controllers
 
         }
 
-        [HttpDelete("id")]
+        [Authorize(Policy = "AdminPolicy")]
+        /*        [RequiresClaim(IdentityData.AdminUserClaimName, "true")]*/
+        [HttpDelete("{id:guid}")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
-        public async Task<ActionResult<List<Employee>>> DeleteEmployee(int id)
+        public async Task<ActionResult<List<Employee>>> DeleteEmployee(Guid id)
         {
             try
             {
-                var dbEmployee = _context.Employees.First(x => x.Id == id);
+                var dbEmployee = _context.Employees.First(x => x.UserId == id);
                 if (dbEmployee is null) return NotFound("Employee not found.");
 
                 _context.Employees.Remove(dbEmployee);

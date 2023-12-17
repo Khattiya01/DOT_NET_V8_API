@@ -1,6 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using WebAppAPI.Data;
 using WebAppAPI.Models;
 
@@ -14,12 +22,18 @@ namespace WebAppAPI.Controllers
 
         private readonly ILogger<AuthController> _logger;
 
-        public AuthController(ILogger<AuthController> logger, DataContext context)
+        private readonly IConfiguration _configuration;
+
+        private readonly JwtService _jwtService;
+
+        public AuthController(ILogger<AuthController> logger, DataContext context, IConfiguration  configuration, JwtService jwtService)
         {
             _logger = logger;
             _context = context;
+            _configuration = configuration;
+            _jwtService = jwtService;
+            _jwtService = jwtService;
         }
-
 
         [HttpPost]
         public async Task<ActionResult<List<User>>> Login(User request)
@@ -35,7 +49,34 @@ namespace WebAppAPI.Controllers
                 return BadRequest("Wrong password");
             }
 
-            return Ok(employee);
+            /*   string token = CreateToken(employee);*/
+
+            var token = _jwtService.GenerateToken(employee.UserId, employee.Email, employee.Role);
+
+   
+            return Ok(new { token = token, employee = employee });
+        }
+
+        private string CreateToken(Employee user)
+        {
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("JwtSettings:Key").Value!));
+
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: cred
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }

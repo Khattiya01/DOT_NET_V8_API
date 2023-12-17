@@ -20,22 +20,11 @@ namespace WebAppAPI.Filters.ActionFilters
         {
             base.OnActionExecuting(context);
 
-            var employeeId = context.ActionArguments["id"] as int?;
+            var employeeId = context.ActionArguments["id"] as Guid?;
             if (employeeId.HasValue)
             {
-                if (employeeId.Value <= 0)
                 {
-                    context.ModelState.AddModelError("EmployeeId", "EmployeeId is invalid");
-                    var problemDetail = new ValidationProblemDetails(context.ModelState)
-                    {
-                        Status = StatusCodes.Status400BadRequest,
-                        Detail = "detail"
-                    };
-                    context.Result = new BadRequestObjectResult(problemDetail);
-                }
-                else 
-                {
-                    var employee = _context.Employees.FirstOrDefault(s => s.Id == employeeId.Value);
+                    var employee = _context.Employees.FirstOrDefault(s => s.UserId == employeeId.Value);
                     if(employee == null)
                     {
                         context.ModelState.AddModelError("EmployeeId", "EmployeeId doesn't exits.");
@@ -46,6 +35,16 @@ namespace WebAppAPI.Filters.ActionFilters
                         context.Result = new NotFoundObjectResult(problemDetail);
                     }
                 }
+            }
+            else
+            {
+                    context.ModelState.AddModelError("EmployeeId", "EmployeeId is invalid");
+                    var problemDetail = new ValidationProblemDetails(context.ModelState)
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Detail = "detail"
+                    };
+                    context.Result = new BadRequestObjectResult(problemDetail);
             }
         }
     }
