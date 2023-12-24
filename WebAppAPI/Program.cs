@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -7,7 +6,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using WebAppAPI.Data;
 using WebAppAPI.Filters.ActionFilters;
-using WebAppAPI.Identity;
 using WebAppAPI.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);

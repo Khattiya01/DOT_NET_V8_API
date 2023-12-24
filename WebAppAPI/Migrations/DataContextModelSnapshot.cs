@@ -219,13 +219,34 @@ namespace WebAppAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WebAppAPI.Models.CheckPoints", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<List<string>>("Keys")
+                        .HasColumnType("text[]");
+
+                    b.Property<Guid?>("SaveManagerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<List<bool>>("Values")
+                        .HasColumnType("boolean[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SaveManagerId")
+                        .IsUnique();
+
+                    b.ToTable("CheckPoints");
+                });
+
             modelBuilder.Entity("WebAppAPI.Models.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CompanyLocalName")
                         .IsRequired()
@@ -235,24 +256,21 @@ namespace WebAppAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("EmployeeId");
 
-                    b.ToTable("Companys");
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("WebAppAPI.Models.Employee", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("Age")
                         .HasColumnType("integer");
@@ -290,12 +308,73 @@ namespace WebAppAPI.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Inventory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<List<string>>("Keys")
+                        .HasColumnType("text[]");
+
+                    b.Property<Guid?>("SaveManagerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<List<int>>("Values")
+                        .HasColumnType("integer[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SaveManagerId")
+                        .IsUnique();
+
+                    b.ToTable("Inventorys");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.SaveManager", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<List<string>>("EquipmentId")
+                        .HasColumnType("text[]");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("closestCheckpointId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("lostCurrencyAmount")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("lostcurrencyX")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("lostcurrencyY")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("SaveManagers");
                 });
 
             modelBuilder.Entity("WebAppAPI.Models.Shirt", b =>
@@ -332,16 +411,60 @@ namespace WebAppAPI.Migrations
                     b.ToTable("Shirts");
                 });
 
+            modelBuilder.Entity("WebAppAPI.Models.SkillTree", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<List<string>>("Keys")
+                        .HasColumnType("text[]");
+
+                    b.Property<Guid?>("SaveManagerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<List<bool>>("Values")
+                        .HasColumnType("boolean[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SaveManagerId")
+                        .IsUnique();
+
+                    b.ToTable("SkillTrees");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.VolumeSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<List<string>>("Keys")
+                        .HasColumnType("text[]");
+
+                    b.Property<Guid?>("SaveManagerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<List<double>>("Values")
+                        .HasColumnType("double precision[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SaveManagerId")
+                        .IsUnique();
+
+                    b.ToTable("VolumeSettings");
+                });
+
             modelBuilder.Entity("WebAppAPI.Models.Weapon", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("WeaponName")
                         .IsRequired()
@@ -405,19 +528,64 @@ namespace WebAppAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WebAppAPI.Models.CheckPoints", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.SaveManager", "SaveManager")
+                        .WithOne("Checkpoints")
+                        .HasForeignKey("WebAppAPI.Models.CheckPoints", "SaveManagerId");
+
+                    b.Navigation("SaveManager");
+                });
+
             modelBuilder.Entity("WebAppAPI.Models.Company", b =>
                 {
                     b.HasOne("WebAppAPI.Models.Employee", "Employee")
-                        .WithOne("company")
-                        .HasForeignKey("WebAppAPI.Models.Company", "EmployeeId");
+                        .WithMany()
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.Inventory", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.SaveManager", "SaveManager")
+                        .WithOne("Inventory")
+                        .HasForeignKey("WebAppAPI.Models.Inventory", "SaveManagerId");
+
+                    b.Navigation("SaveManager");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.SaveManager", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.Employee", "Employee")
+                        .WithOne("saveManager")
+                        .HasForeignKey("WebAppAPI.Models.SaveManager", "EmployeeId");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.SkillTree", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.SaveManager", "SaveManager")
+                        .WithOne("SkillTree")
+                        .HasForeignKey("WebAppAPI.Models.SkillTree", "SaveManagerId");
+
+                    b.Navigation("SaveManager");
+                });
+
+            modelBuilder.Entity("WebAppAPI.Models.VolumeSettings", b =>
+                {
+                    b.HasOne("WebAppAPI.Models.SaveManager", "SaveManager")
+                        .WithOne("VolumeSettings")
+                        .HasForeignKey("WebAppAPI.Models.VolumeSettings", "SaveManagerId");
+
+                    b.Navigation("SaveManager");
                 });
 
             modelBuilder.Entity("WebAppAPI.Models.Weapon", b =>
                 {
                     b.HasOne("WebAppAPI.Models.Employee", "Employee")
-                        .WithMany("weapons")
+                        .WithMany()
                         .HasForeignKey("EmployeeId");
 
                     b.Navigation("Employee");
@@ -425,9 +593,18 @@ namespace WebAppAPI.Migrations
 
             modelBuilder.Entity("WebAppAPI.Models.Employee", b =>
                 {
-                    b.Navigation("company");
+                    b.Navigation("saveManager");
+                });
 
-                    b.Navigation("weapons");
+            modelBuilder.Entity("WebAppAPI.Models.SaveManager", b =>
+                {
+                    b.Navigation("Checkpoints");
+
+                    b.Navigation("Inventory");
+
+                    b.Navigation("SkillTree");
+
+                    b.Navigation("VolumeSettings");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,8 +6,7 @@ namespace WebAppAPI.Models
 {
     public class Employee
     {
-        public int Id { get; set; }
-        public Guid UserId { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         [Required]
@@ -26,8 +25,10 @@ namespace WebAppAPI.Models
 
         public List<string> Role { get; set; }
 
-        public Company? company { get; set; }
+   /*     public Company? company { get; set; }*/
 
-        public List<Weapon>? weapons { get; set; }
+        /*        public List<Weapon>? weapons { get; set; }*/
+
+        public SaveManager? saveManager { get; set; }
     }
 }

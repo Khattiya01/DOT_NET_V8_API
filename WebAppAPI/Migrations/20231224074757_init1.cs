@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WebAppAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDatabase1 : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,9 +56,7 @@ namespace WebAppAPI.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Firstname = table.Column<string>(type: "text", nullable: false),
@@ -200,20 +198,44 @@ namespace WebAppAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Companys",
+                name: "Company",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyName = table.Column<string>(type: "text", nullable: false),
                     CompanyLocalName = table.Column<string>(type: "text", nullable: false),
-                    EmployeeId = table.Column<int>(type: "integer", nullable: true)
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companys", x => x.Id);
+                    table.PrimaryKey("PK_Company", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Companys_Employees_EmployeeId",
+                        name: "FK_Company_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SaveManagers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Currency = table.Column<int>(type: "integer", nullable: true),
+                    EquipmentId = table.Column<List<string>>(type: "text[]", nullable: true),
+                    closestCheckpointId = table.Column<string>(type: "text", nullable: true),
+                    lostcurrencyX = table.Column<double>(type: "double precision", nullable: true),
+                    lostcurrencyY = table.Column<double>(type: "double precision", nullable: true),
+                    lostCurrencyAmount = table.Column<int>(type: "integer", nullable: true),
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaveManagers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaveManagers_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id");
@@ -223,10 +245,9 @@ namespace WebAppAPI.Migrations
                 name: "Weapons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     WeaponName = table.Column<string>(type: "text", nullable: false),
-                    EmployeeId = table.Column<int>(type: "integer", nullable: true)
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -235,6 +256,82 @@ namespace WebAppAPI.Migrations
                         name: "FK_Weapons_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CheckPoints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keys = table.Column<List<string>>(type: "text[]", nullable: true),
+                    Values = table.Column<List<bool>>(type: "boolean[]", nullable: true),
+                    SaveManagerId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CheckPoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CheckPoints_SaveManagers_SaveManagerId",
+                        column: x => x.SaveManagerId,
+                        principalTable: "SaveManagers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventorys",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keys = table.Column<List<string>>(type: "text[]", nullable: true),
+                    Values = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    SaveManagerId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventorys", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Inventorys_SaveManagers_SaveManagerId",
+                        column: x => x.SaveManagerId,
+                        principalTable: "SaveManagers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SkillTrees",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keys = table.Column<List<string>>(type: "text[]", nullable: true),
+                    Values = table.Column<List<bool>>(type: "boolean[]", nullable: true),
+                    SaveManagerId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SkillTrees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SkillTrees_SaveManagers_SaveManagerId",
+                        column: x => x.SaveManagerId,
+                        principalTable: "SaveManagers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VolumeSettings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keys = table.Column<List<string>>(type: "text[]", nullable: true),
+                    Values = table.Column<List<double>>(type: "double precision[]", nullable: true),
+                    SaveManagerId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VolumeSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VolumeSettings_SaveManagers_SaveManagerId",
+                        column: x => x.SaveManagerId,
+                        principalTable: "SaveManagers",
                         principalColumn: "Id");
                 });
 
@@ -276,9 +373,39 @@ namespace WebAppAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Companys_EmployeeId",
-                table: "Companys",
+                name: "IX_CheckPoints_SaveManagerId",
+                table: "CheckPoints",
+                column: "SaveManagerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Company_EmployeeId",
+                table: "Company",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inventorys_SaveManagerId",
+                table: "Inventorys",
+                column: "SaveManagerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SaveManagers_EmployeeId",
+                table: "SaveManagers",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SkillTrees_SaveManagerId",
+                table: "SkillTrees",
+                column: "SaveManagerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VolumeSettings_SaveManagerId",
+                table: "VolumeSettings",
+                column: "SaveManagerId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Weapons_EmployeeId",
@@ -305,10 +432,22 @@ namespace WebAppAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Companys");
+                name: "CheckPoints");
+
+            migrationBuilder.DropTable(
+                name: "Company");
+
+            migrationBuilder.DropTable(
+                name: "Inventorys");
 
             migrationBuilder.DropTable(
                 name: "Shirts");
+
+            migrationBuilder.DropTable(
+                name: "SkillTrees");
+
+            migrationBuilder.DropTable(
+                name: "VolumeSettings");
 
             migrationBuilder.DropTable(
                 name: "Weapons");
@@ -318,6 +457,9 @@ namespace WebAppAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "SaveManagers");
 
             migrationBuilder.DropTable(
                 name: "Employees");

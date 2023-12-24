@@ -24,7 +24,7 @@ namespace WebAppAPI.Filters.ActionFilters
             if (employeeId.HasValue)
             {
                 {
-                    var employee = _context.Employees.FirstOrDefault(s => s.UserId == employeeId.Value);
+                    var employee = _context.Employees.FirstOrDefault(s => s.Id == employeeId.Value);
                     if(employee == null)
                     {
                         context.ModelState.AddModelError("EmployeeId", "EmployeeId doesn't exits.");

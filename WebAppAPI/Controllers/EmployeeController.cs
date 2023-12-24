@@ -29,7 +29,7 @@ namespace WebAppAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Employee>>> GetAllEmployee()
         {
-            var datas = await _context.Employees.Include(e=> e.company).Include(e=> e.weapons).ToListAsync();
+            var datas = await _context.Employees.Include(e=> e.saveManager).ToListAsync();
 
             return Ok( new
             {
@@ -38,13 +38,13 @@ namespace WebAppAPI.Controllers
             });
         }
 
-        [Authorize(Policy = "AdminPolicy")]
+      /*  [Authorize(Policy = "AdminPolicy")]*/
         [HttpGet("{id:guid}")]
         [ServiceFilter(typeof(Employee_ValidateEmployeeIdIdFilterAttribute))]
         public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)
         {
 
-            var employee = await _context.Employees.Include(e => e.company).Include(e => e.weapons).FirstOrDefaultAsync(x => x.UserId == id);
+            var employee = await _context.Employees.Include(e => e.saveManager).FirstOrDefaultAsync(x => x.Id == id);
             if (employee is null)
             {
                 return NotFound();
@@ -62,7 +62,7 @@ namespace WebAppAPI.Controllers
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(employee.Password);
 
                 _employee = employee;
-                _employee.UserId = Guid.NewGuid();
+                _employee.Id = Guid.NewGuid();
                 _employee.CreatedAt = DateTime.UtcNow;
                 _employee.UpdatedAt = DateTime.UtcNow;
                 _employee.Password = passwordHash;
@@ -85,7 +85,7 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                var dbEmployee = _context.Employees.First(x => x.UserId == employee.UserId);
+                var dbEmployee = _context.Employees.First(x => x.Id == employee.Id);
                 if(dbEmployee is null) return NotFound("Employee not found.");
 
                 dbEmployee.Email = employee.Email;
@@ -114,7 +114,7 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                var dbEmployee = _context.Employees.First(x => x.UserId == id);
+                var dbEmployee = _context.Employees.First(x => x.Id == id);
                 if (dbEmployee is null) return NotFound("Employee not found.");
 
                 _context.Employees.Remove(dbEmployee);
