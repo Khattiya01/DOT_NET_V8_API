@@ -54,7 +54,7 @@ namespace WebAppAPI.Controllers
             var token = _jwtService.GenerateToken(employee.Id, employee.Email, employee.Role);
 
    
-            return Ok(new { token = token, employee = employee });
+            return new OkObjectResult(new { token = token, userId = employee.Id});
         }
 
         private string CreateToken(Employee user)

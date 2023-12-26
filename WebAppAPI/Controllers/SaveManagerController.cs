@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAppAPI.Data;
-using WebAppAPI.Filters.ActionFilters;
 using WebAppAPI.Models;
 
 namespace WebAppAPI.Controllers

@@ -114,11 +114,11 @@ namespace WebAppAPI.Controllers
         {
             try
             {
-                var dbEmployee = _context.Employees.First(x => x.Id == id);
+                var dbEmployee = await _context.Employees.FirstAsync(x => x.Id == id);
                 if (dbEmployee is null) return NotFound("Employee not found.");
 
                 _context.Employees.Remove(dbEmployee);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 return Ok();
             } 
